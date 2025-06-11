@@ -30,7 +30,7 @@ if (!branchname) {
 }
 
 const utctimestamp = new Date().toISOString().replace(/[:.]/g, '-');
-const filename = `docs/copilot-metrics-${utctimestamp}.html`;
+const filename = `copilot-metrics-${utctimestamp}.html`;
 
 const [owner, repo] = reponame.split("/");
 
@@ -79,7 +79,7 @@ async function main() {
     owner,
     repo,
     branch: branchname,
-    path: filename,
+    path: `docs/${filename}`,
     message: "Create Copilot metrics HTML",
     content: Buffer.from(htmlContent).toString("base64"),
   });
