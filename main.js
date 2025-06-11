@@ -54,7 +54,7 @@ async function main() {
   const result = await getOrganizationMetrics();
    // Create or update the file
   await octokit.repos.createOrUpdateFileContents({
-    owner,
+    organization,
     reponame,
     branch: branchname,
     path: filename,
