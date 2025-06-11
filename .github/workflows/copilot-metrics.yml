@@ -17,7 +17,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./gh-automation
+        # working-directory: ./gh-automation
 
     steps:
     - name: Checkout code
