@@ -52,6 +52,48 @@ async function getOrganizationMetrics() {
   }
 }
 
+
+// Get a list of report files in docs/reports/ from the repo
+async function getReportsList() {
+  try {
+    const res = await octokit.repos.getContent({
+      owner,
+      repo,
+      path: "docs/reports",
+      ref: branchname,
+    });
+    // Only include .html files
+    return res.data
+      .filter(item => item.type === "file" && item.name.endsWith(".html"))
+      .map(item => item.name)
+      .sort()
+      .reverse(); // newest first
+  } catch (error) {
+    console.error('Error fetching reports list:', error);
+    return [];
+  }
+}
+
+// Generate index.html content with links to all reports
+function generateIndexHtml(reportFiles) {
+  let html = `<html><body>
+    <h2>Available Reports</h2>
+    <ul>
+  `;
+  if (reportFiles.length === 0) {
+    html += "<li>No reports available.</li>";
+  } else {
+    for (const file of reportFiles) {
+      html += `<li><a href="reports/${file}">${file}</a></li>`;
+    }
+  }
+  html += `
+    </ul>
+  </body></html>`;
+  return html;
+}
+
+
 // Convert JSON to a simple HTML table (replace with your preferred HTML)
 function jsonToHtmlTable(data) {
   if (!Array.isArray(data) || data.length === 0) {
@@ -79,12 +121,27 @@ async function main() {
     owner,
     repo,
     branch: branchname,
-    path: `docs/${filename}`,
+    path: `docs/reports/${filename}`,
     message: "Create Copilot metrics HTML",
     content: Buffer.from(htmlContent).toString("base64"),
   });
 
-  console.log(`HTML published to GitHub Pages: https://${owner}.github.io/${repo}/${filename}`);
+  console.log(`HTML published to GitHub Pages: https://${owner}.github.io/${repo}/reports/${filename}`);
+
+  //generate the index file
+   // Get updated list of reports and generate index.html
+  const reportFiles = await getReportsList();
+  const indexHtml = generateIndexHtml(reportFiles);
+
+  // Create or update index.html
+  await octokit.repos.createOrUpdateFileContents({
+    owner,
+    repo,
+    branch: branchname,
+    path: `docs/index.html`,
+    message: "Update reports index.html",
+    content: Buffer.from(indexHtml).toString("base64"),
+  });
 }
 
 main().catch(error => {
