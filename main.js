@@ -52,9 +52,28 @@ async function getOrganizationMetrics() {
   }
 }
 
+// Convert JSON to a simple HTML table (replace with your preferred HTML)
+function jsonToHtmlTable(data) {
+  if (!Array.isArray(data) || data.length === 0) {
+    return "<html><body><h2>No data available</h2></body></html>";
+  }
+  let html = "<html><body>";
+  data.forEach((item, idx) => {
+    html += `<h2>Metrics for ${item.date || "Item " + (idx + 1)}</h2><table border="1">`;
+    for (const key in item) {
+      html += `<tr><td>${key}</td><td>${JSON.stringify(item[key])}</td></tr>`;
+    }
+    html += "</table>";
+  });
+  html += "</body></html>";
+  return html;
+}
+
 async function main() {
   console.log(`Fetching Copilot metrics for organization: ${organization}`);
   const result = await getOrganizationMetrics();
+  const htmlContent = jsonToHtmlTable(result);
+
    // Create or update the file
   await octokit.repos.createOrUpdateFileContents({
     owner,
@@ -62,7 +81,7 @@ async function main() {
     branch: branchname,
     path: filename,
     message: "Create Copilot metrics HTML",
-    content: Buffer.from(result).toString("base64"),
+    content: Buffer.from(htmlContent).toString("base64"),
   });
 
   console.log(`HTML published to GitHub Pages: https://${owner}.github.io/${repo}/${filename}`);
