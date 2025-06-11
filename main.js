@@ -59,7 +59,7 @@ async function main() {
     branch: branchname,
     path: filename,
     message: "Create Copilot metrics HTML",
-    content: Buffer.from(html).toString("base64"),
+    content: Buffer.from(result).toString("base64"),
   });
 
   console.log(`HTML published to GitHub Pages: https://${owner}.github.io/${repo}/${filename}`);
