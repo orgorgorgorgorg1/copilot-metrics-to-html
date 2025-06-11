@@ -111,6 +111,23 @@ function jsonToHtmlTable(data) {
   return html;
 }
 
+// Helper to get file sha if it exists
+async function getFileSha(path) {
+  try {
+    const res = await octokit.repos.getContent({
+      owner,
+      repo,
+      path,
+      ref: branchname,
+    });
+    return res.data.sha;
+  } catch (error) {
+    // If file does not exist, return undefined
+    if (error.status === 404) return undefined;
+    throw error;
+  }
+}
+
 async function main() {
   console.log(`Fetching Copilot metrics for organization: ${organization}`);
   const result = await getOrganizationMetrics();
@@ -132,6 +149,7 @@ async function main() {
    // Get updated list of reports and generate index.html
   const reportFiles = await getReportsList();
   const indexHtml = generateIndexHtml(reportFiles);
+  const indexSha = await getFileSha("docs/index.html");
 
   // Create or update index.html
   await octokit.repos.createOrUpdateFileContents({
@@ -141,6 +159,7 @@ async function main() {
     path: `docs/index.html`,
     message: "Update reports index.html",
     content: Buffer.from(indexHtml).toString("base64"),
+    sha: indexSha, // Include sha to update existing file
   });
 }
 
