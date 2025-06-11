@@ -26,11 +26,11 @@ jobs:
     - name: npm install
       run: npm install
 
-    - name: Process Repositories
+    - name: Get Metrics
       run: node main.js
       env:
         GITHUB_TOKEN: ${{ secrets.ORG_METRICS_TOKEN }}
         GITHUB_ORGANIZATION: ${{ github.repository_owner}}
         GITHUB_REPO_NAME: ${{ github.event.repository.name }}
-        GITHUB_BRANCH_NAME: gh-pages
+        GITHUB_BRANCH_NAME: main
         # GITHUB_API_URL: ${{ github.api_url }}
