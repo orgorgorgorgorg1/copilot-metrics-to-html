@@ -32,6 +32,9 @@ if (!branchname) {
 const utctimestamp = new Date().toISOString().replace(/[:.]/g, '-');
 const filename = `docs/copilot-metrics-${utctimestamp}.html`;
 
+const [owner, repo] = reponame.split("/");
+
+
 // Initialize GitHub API client
 const octokit = new Octokit({
   auth: token
