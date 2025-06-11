@@ -30,7 +30,7 @@ if (!branchname) {
 }
 
 const utctimestamp = new Date().toISOString().replace(/[:.]/g, '-');
-const filename = `copilot-metrics-${utctimestamp}.html`;
+const filename = `docs/copilot-metrics-${utctimestamp}.html`;
 
 // Initialize GitHub API client
 const octokit = new Octokit({
