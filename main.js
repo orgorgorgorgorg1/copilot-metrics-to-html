@@ -54,8 +54,8 @@ async function main() {
   const result = await getOrganizationMetrics();
    // Create or update the file
   await octokit.repos.createOrUpdateFileContents({
-    organization,
-    reponame,
+    owner,
+    repo,
     branch: branchname,
     path: filename,
     message: "Create Copilot metrics HTML",
