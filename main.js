@@ -23,7 +23,7 @@ if (!reponame) {
 }
 
 // Get organization name from environment
-const branchname = process.env.BRANCH_NAME;
+const branchname = process.env.GITHUB_BRANCH_NAME;
 if (!branchname) {
   console.error('Error: BRANCH_NAME environment variable not set');
   process.exit(1);
