@@ -1,0 +1,36 @@
+name: Copilot Metrics from Organization
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+on: [workflow_dispatch]
+
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./gh-automation
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: npm install
+      run: npm install
+
+    - name: Process Repositories
+      run: node main.js
+      env:
+        GITHUB_TOKEN: ${{ secrets.ORG_METRICS_TOKEN }}
+        GITHUB_ORGANIZATION: ${{ github.repository_owner}}
+        GITHUB_REPO_NAME: ${{ github.event.repository.name }}
+        GITHUB_BRANCH_NAME: gh-pages
+        # GITHUB_API_URL: ${{ github.api_url }}
